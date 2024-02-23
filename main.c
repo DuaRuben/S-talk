@@ -8,7 +8,8 @@
 #include <arpa/inet.h>
 #include <string.h>
 #include "recieverThread.h"
-#include <pthread/pthread.h>
+#include "printerThread.h"
+#include <pthread.h>
 
 #define MAX_LEN 1024
 #define PORT 22110
@@ -24,18 +25,11 @@ int main()
     senderList = List_create();
     recieverList = List_create();
     struct sockaddr_in addr;
-    struct sockaddr_in sinRemote;
     //Reciever
     memset(&addr, 0, sizeof(addr));
     addr.sin_family = AF_INET;
     addr.sin_addr.s_addr = inet_addr("142.58.15.216");
     addr.sin_port = htons(12346);
-
-    //Sender
-    memset(&addr, 0, sizeof(addr));
-    sinRemote.sin_family = AF_INET;
-    sinRemote.sin_addr.s_addr = inet_addr("142.58.15.122");
-    sinRemote.sin_port = htons(12345);
 
     //Creating a socket
     int sockt = socket(AF_INET, SOCK_DGRAM, 0);
@@ -66,7 +60,7 @@ int main()
     while (1)
     {
         //recieverThread
-        Reciever_init(recieverList,sockt,sinRemote,recieverToPrintCond,recieverToPrintMutex);
+        Reciever_init(recieverList,sockt,recieverToPrintCond,recieverToPrintMutex);
         Printer_init(recieverList,recieverToPrintCond,recieverToPrintMutex);
         //PrinterThread
         //inputThread

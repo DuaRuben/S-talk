@@ -1,4 +1,5 @@
 #include "recieverThread.h"
+#include "list.h"
 #include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -20,8 +21,13 @@ pthread_mutex_t recieverToPrintMutex;
 
 void *recieverThread(void *unused) //we'll signal this when we get input from keyboard, hence add cond_wait for thread r
 {
-    //mutex lock here
+   //mutex lock here
    //pthread_cond_wait(&recCond); // pass mutex also
+    struct sockaddr_in sinRemote;
+    memset(&sinRemote, 0, sizeof(sinRemote));
+    sinRemote.sin_family = AF_INET;
+    sinRemote.sin_addr.s_addr = inet_addr("142.58.15.122");
+    sinRemote.sin_port = htons(12345);
     unsigned int sin_len = sizeof(sinRemote);
     char messageRx[MAX_LEN];
     int bytesRx = recvfrom(s, messageRx, MAX_LEN, 0, (struct sockaddr *)&sinRemote, sin_len);
@@ -39,12 +45,11 @@ void *recieverThread(void *unused) //we'll signal this when we get input from ke
     // mutex for wach pipeline
 
 }
-void Reciever_init(List* recieverList,int socket,struct sockaddr_in sRemote,pthread_cond_t condition,pthread_mutex_t mutex) //mutex add here otherwise not gonna change in main
+void Reciever_init(List* recieverList, int socket, pthread_cond_t condition, pthread_mutex_t mutex)
 {
     //pthread_cond_init(&recCond);
     //Copying List
     s = socket;
-    sinRemote = sRemote;
     list = recieverList;
     recieverToPrintCond = condition;
     recieverToPrintMutex = mutex;
