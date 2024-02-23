@@ -7,6 +7,7 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <string.h>
+#include "recieverThread.h"
 
 #define MAX_LEN 1024
 #define PORT 22110
@@ -14,10 +15,18 @@
 List* senderList;
 List* recieverList;
 
+
+
 int main()
 {
     senderList = List_create();
     recieverList = List_create();
+
+    //recieverThread
+    Reciever_init(recieverList);
+    //PrinterThread
+    //inputThread
+    //senderThread
 
     struct sockaddr_in addr;
     memset(&addr, 0, sizeof(addr));
@@ -33,6 +42,7 @@ int main()
     //}
     while (1)
     {
+        
         // waiting for screen
         struct sockaddr_in sinRemote;
     
@@ -49,7 +59,6 @@ int main()
         
         sendto(s, messageTx , strlen(messageTx), 0, (struct sockaddr *) &sinRemote, sin_len);
         
-        
  
         sin_len = sizeof(sinRemote);
         char messageRx[MAX_LEN];
@@ -60,4 +69,5 @@ int main()
         messageRx[termRx] = 0;
         printf("Message Recieved (%d bytes): \n\n'%s'\n", bytesRx, messageRx);  
     }
+    Reciever_shutdown();
 }
