@@ -7,8 +7,8 @@
 #define MAX_LEN 1024
 
 pthread_t thread;
-pthread_cond_t recieverToPrintCond = PTHREAD_COND_INITIALIZER;
-pthread_mutex_t recieverToPrintMutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_cond_t recieverToPrintCond;
+pthread_mutex_t recieverToPrintMutex;
 List* list;
 
 
@@ -17,8 +17,8 @@ void * printerThread(void * unused){
     pthread_mutex_lock(&recieverToPrintMutex);
     {
         pthread_cond_wait(&recieverToPrintCond,&recieverToPrintMutex);
-        char messageRx[MAX_LEN] = List_remove(list);
-        printf("Message Recieved: \n\n'%s'\n", messageRx);
+        char* x = List_remove(list);
+        printf("Message Recieved: \n\n'%s'\n", x);
     }
     pthread_mutex_unlock(&recieverToPrintMutex);
 }

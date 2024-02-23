@@ -13,12 +13,12 @@ List* list;
 pthread_t thread;
 struct sockaddr_in sinRemote;
 int s;
-pthread_cond_t recieverToPrintCond = PTHREAD_COND_INITIALIZER;
-pthread_mutex_t recieverToPrintMutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_cond_t recieverToPrintCond;
+pthread_mutex_t recieverToPrintMutex;
 
 
 
-void *recieverThread(void *unused)
+void *recieverThread(void *unused) //we'll signal this when we get input from keyboard, hence add cond_wait for thread r
 {
     //mutex lock here
    //pthread_cond_wait(&recCond); // pass mutex also
@@ -39,7 +39,7 @@ void *recieverThread(void *unused)
     // mutex for wach pipeline
 
 }
-void Reciever_init(List* recieverList,int socket,struct sockaddr_in sRemote,pthread_cond_t condition,pthread_mutex_t mutex)
+void Reciever_init(List* recieverList,int socket,struct sockaddr_in sRemote,pthread_cond_t condition,pthread_mutex_t mutex) //mutex add here otherwise not gonna change in main
 {
     //pthread_cond_init(&recCond);
     //Copying List
