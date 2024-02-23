@@ -1,11 +1,12 @@
 #include "main.h"
+#include "list.h"
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <string.h>
+#include "recieverThread.h"
 
 #define MAX_LEN 1024
 #define PORT 22110
