@@ -21,10 +21,13 @@ inputSenderMutexVar = PTHREAD_MUTEX_INITIALIZER;
 
 int main()
 {
+    //open List
     senderList = List_create();
     recieverList = List_create();
-    struct sockaddr_in addr;
+
+
     //Reciever
+    struct sockaddr_in addr;
     memset(&addr, 0, sizeof(addr));
     addr.sin_family = AF_INET;
     addr.sin_addr.s_addr = INADDR_ANY;
@@ -91,4 +94,6 @@ int main()
 
         Reciever_shutdown();
         Printer_shutdown();
+
+        //Close List
 }
