@@ -13,15 +13,11 @@
 pthread_t thread;
 List *list;
 struct sockaddr_in sinRemote;
-int s;
-pthread_cond_t inputToSendCond;
-pthread_mutex_t inputToSendMutex;
+int socket;
 
-void *senderThread(void *unused) // we'll signal this when we get input from keyboard, hence add cond_wait for thread r
+void *senderThread(void *unused)
 {
-    // mutex lock here
-    // pthread_cond_wait(&recCond); // pass mutex also
-
+    // setup sinRemote
     struct sockaddr_in sinRemote;
     memset(&sinRemote, 0, sizeof(sinRemote));
     sinRemote.sin_family = AF_INET;
@@ -29,30 +25,32 @@ void *senderThread(void *unused) // we'll signal this when we get input from key
     sinRemote.sin_port = htons(12345);
     unsigned int sin_len = sizeof(sinRemote);
 
-    pthread_mutex_lock(&inputToSendMutex);
+    pthread_mutex_lock(&inputSenderMutexVar);
     {
-        char *msg[100];
+        //wait for signal
+        while(1){
+            pthread_cond_wait(&inputSenderCondVar,&inputSenderMutexVar);
+        }
+
+        //remove from list
+        char msg[MAX_LEN];
         List_first(list);
         char *temp = List_remove(list);
-        strcpy(temp, msg);
-        unsigned int sin_len = sizeof(sinRemote);
+        if(temp!=NULL){
+            strcpy(msg,temp);
+            free(temp);
+        }
+        
+        //send Msg
+        sendto(socket, msg, strlen(msg), 0, (struct sockaddr *)&sinRemote, sin_len);
     }
-    pthread_mutex_unlock(&inputToSendMutex);
-    sendto(s, msg, strlen(msg), 0, (struct sockaddr *)&sinRemote, sin_len);
-    // unlock mutexafter append
-    //  signal waiter in printer thread
-    //  hell get mutex
-    //  mutex for wach pipeline
+    pthread_mutex_unlock(&inputSenderMutexVar);
 }
 
-void Sender_init(List *senderList, int socket, pthread_cond_t condition, pthread_mutex_t mutex)
+void Sender_init(List *senderList, int sockt)
 {
-    // pthread_cond_init(&recCond);
-    // Copying List
-    s = socket;
+    socket = sockt;
     list = senderList;
-    inputToSendCond = condition;
-    inputToSendMutex = mutex;
     pthread_create(&thread, NULL, senderThread, NULL);
 }
 

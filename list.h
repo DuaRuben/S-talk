@@ -18,6 +18,13 @@ pthread_cond_t recieverListAppendCond; // when keyboard is enetered
 // Pthread helpers for printerThread
 pthread_cond_t recieverListToMonitorCond;
 
+
+
+//Condition variable for InputSender
+pthread_cond_t inputSenderCondVar;
+//Mutex variable for InputSender
+pthread_mutex_t inputSenderMutexVar;
+
 typedef struct Node_s Node;
 struct Node_s {
     void* pItem;

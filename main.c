@@ -16,7 +16,8 @@
 List* senderList;
 List* recieverList;
 
-
+inputSenderCondVar = PTHREAD_COND_INITIALIZER;
+inputSenderMutexVar = PTHREAD_MUTEX_INITIALIZER;
 
 int main()
 {
