@@ -16,8 +16,7 @@
 List* senderList;
 List* recieverList;
 
-pthread_cond_t recieverToPrintCond = PTHREAD_COND_INITIALIZER;
-pthread_mutex_t recieverToPrintMutex = PTHREAD_MUTEX_INITIALIZER;
+
 
 int main()
 {
@@ -56,11 +55,9 @@ int main()
     // //if(x ==0){
     // //    printf("Success");
     // //}
-    while (1)
-    {
         //recieverThread
-        Reciever_init(recieverList,sockt,recieverToPrintCond,recieverToPrintMutex);
-        Printer_init(recieverList,recieverToPrintCond,recieverToPrintMutex);
+        Reciever_init(&recieverList, sockt);
+        Printer_init(&recieverList);
         //PrinterThread
         //inputThread
         //senderThread
@@ -93,5 +90,4 @@ int main()
 
         Reciever_shutdown();
         Printer_shutdown();
-    }
 }

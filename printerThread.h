@@ -4,7 +4,8 @@
 #include <pthread.h>
 
 void * printerThread(void * unused);
-void Printer_init(List* recieverList,pthread_cond_t condition,pthread_mutex_t mutex);
+void Printer_init(List* recieverList);
 void Printer_shutdown();
+void waitForRecieverSignal();
 
 #endif

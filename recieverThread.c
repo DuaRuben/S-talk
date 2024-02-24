@@ -14,45 +14,68 @@ List* list;
 pthread_t thread;
 struct sockaddr_in sinRemote;
 int s;
-pthread_cond_t recieverToPrintCond;
-pthread_mutex_t recieverToPrintMutex;
-
 
 
 void *recieverThread(void *unused) //we'll signal this when we get input from keyboard, hence add cond_wait for thread r
 {
    //mutex lock here
    //pthread_cond_wait(&recCond); // pass mutex also
-    struct sockaddr_in sinRemote;
-    memset(&sinRemote, 0, sizeof(sinRemote));
-    sinRemote.sin_family = AF_INET;
-    sinRemote.sin_addr.s_addr = inet_addr("142.58.15.122");
-    sinRemote.sin_port = htons(12345);
-    unsigned int sin_len = sizeof(sinRemote);
-    char messageRx[MAX_LEN];
-    int bytesRx = recvfrom(s, messageRx, MAX_LEN, 0, (struct sockaddr *)&sinRemote, sin_len);
-    int termRx = (bytesRx < MAX_LEN) ? bytesRx : MAX_LEN - 1;
-    messageRx[termRx] = 0;
-    pthread_mutex_lock(&recieverToPrintMutex);
-    {
-        List_append(list,messageRx);
-        pthread_cond_signal(&recieverToPrintCond);
+
+    while (1) {
+        //waitForRecieverSignal();
+
+        // init addr for rec
+        struct sockaddr_in sinRemote;
+
+        // i dont think we need this here because not sending
+        memset(&sinRemote, 0, sizeof(sinRemote));
+        sinRemote.sin_family = AF_INET;
+        sinRemote.sin_addr.s_addr = inet_addr("142.58.15.122");
+        sinRemote.sin_port = htons(12345);
+        unsigned int sin_len = sizeof(sinRemote);
+
+
+        char messageRx[MAX_LEN];
+        int bytesRx = recvfrom(s, messageRx, MAX_LEN, 0, (struct sockaddr *)&sinRemote, sin_len);
+        int termRx = (bytesRx < MAX_LEN) ? bytesRx : MAX_LEN - 1;
+        messageRx[termRx] = 0;
+
+        //unlock mutexafter append
+        // signal waiter in printer thread
+        // hell get mutex
+        // mutex for wach pipeline
+
+        if (strlen(messageRx) > 0)
+            appendToList(messageRx);
+
+        // i can call waitforsinganl here when returning from 
+        // /printing on screen will signal backto move forward
     }
-    pthread_mutex_unlock(&recieverToPrintMutex);
-    //unlock mutexafter append
-    // signal waiter in printer thread
-    // hell get mutex
-    // mutex for wach pipeline
 
 }
-void Reciever_init(List* recieverList, int socket, pthread_cond_t condition, pthread_mutex_t mutex)
+
+void appendToList(char* messageRx) { // should check here if nodes avail, wait for signal i think should work in this case
+    pthread_mutex_lock(&recieverListMutex);
+        {
+            List_append(list, messageRx);
+            pthread_cond_signal(&recieverListToMonitorCond); // signal printer thread
+        }
+    pthread_mutex_unlock(&recieverListMutex);
+}
+
+// void waitForRecieverSignal() {
+//    while (1) {
+//         pthread_cond_wait(&recieverListAppendCond, &recieverListMutex);
+//         break;
+//    }
+// }
+
+void Reciever_init(List* recieverList, int socket)
 {
     //pthread_cond_init(&recCond);
     //Copying List
-    s = socket;
     list = recieverList;
-    recieverToPrintCond = condition;
-    recieverToPrintMutex = mutex;
+    s = socket;
     pthread_create(&thread, NULL, recieverThread, NULL);
 }
 void Reciever_shutdown()
