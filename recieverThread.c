@@ -1,4 +1,5 @@
-#include "recieverThread.h"
+#include "pthread_helpers.h"
+#include "main.h"
 #include "list.h"
 #include <pthread.h>
 #include <stdio.h>
@@ -10,8 +11,8 @@
 
 #define MAX_LEN 1024
 
-List* list;
-pthread_t thread;
+List* listptr2;
+pthread_t threadRec;
 struct sockaddr_in sinRemote;
 int s;
 
@@ -57,7 +58,7 @@ void *recieverThread(void *unused) //we'll signal this when we get input from ke
 void appendToList(char* messageRx) { // should check here if nodes avail, wait for signal i think should work in this case
     pthread_mutex_lock(&recieverListMutex);
         {
-            List_append(list, messageRx);
+            List_append(listptr2, messageRx);
             pthread_cond_signal(&recieverListToMonitorCond); // signal printer thread
         }
     pthread_mutex_unlock(&recieverListMutex);
@@ -74,11 +75,13 @@ void Reciever_init(List* recieverList, int socket)
 {
     //pthread_cond_init(&recCond);
     //Copying List
-    list = recieverList;
+    listptr2 = recieverList;
     s = socket;
-    pthread_create(&thread, NULL, recieverThread, NULL);
+    pthread_create(&threadRec, NULL, recieverThread, NULL);
 }
 void Reciever_shutdown()
 {
-    pthread_join(thread, NULL);
+    pthread_join(threadRec, NULL);
 }
+
+//scp -P 24 my_file_name.c user_name@asb9804u-a01.csil.sfu.ca:~/target_folder

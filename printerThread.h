@@ -6,6 +6,5 @@
 void * printerThread(void * unused);
 void Printer_init(List* recieverList);
 void Printer_shutdown();
-void waitForRecieverSignal();
 
 #endif

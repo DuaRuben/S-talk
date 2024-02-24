@@ -1,4 +1,5 @@
 #include "main.h"
+#include "pthread_helpers.h"
 #include "list.h"
 #include <stddef.h>
 #include <stdio.h>
@@ -6,37 +7,34 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <string.h>
-#include "recieverThread.h"
-#include "printerThread.h"
 #include <pthread.h>
 
 #define MAX_LEN 1024
 #define PORT 22110
 
-List* senderList;
-List* recieverList;
-
-
+List *senderList;
+List *recieverList;
 
 int main()
 {
+    initialize_pthreads();
     senderList = List_create();
     recieverList = List_create();
     struct sockaddr_in addr;
-    //Reciever
+    // Reciever
     memset(&addr, 0, sizeof(addr));
     addr.sin_family = AF_INET;
     addr.sin_addr.s_addr = INADDR_ANY;
     addr.sin_port = htons(12345);
 
-    //Creating a socket
+    // Creating a socket
     int sockt = socket(AF_INET, SOCK_DGRAM, 0);
     if (sockt == -1)
     {
         printf("Error!Socket cannot was not created.");
     }
 
-    //Binding a socket
+    // Binding a socket
     int x = bind(sockt, (struct sockaddr *)&addr, sizeof(struct sockaddr_in));
     if (x == -1)
     {
@@ -55,39 +53,38 @@ int main()
     // //if(x ==0){
     // //    printf("Success");
     // //}
-        //recieverThread
-        Reciever_init(&recieverList, sockt);
-        Printer_init(&recieverList);
-        //PrinterThread
-        //inputThread
-        //senderThread
+    // recieverThread
+    Reciever_init(&recieverList, sockt);
+    Printer_init(&recieverList);
+    // PrinterThread
+    // inputThread
+    // senderThread
 
-        // // waiting for screen
-        // struct sockaddr_in sinRemote;
-    
-        // memset(&addr, 0, sizeof(addr));
-        // sinRemote.sin_family = AF_INET;
-        // sinRemote.sin_addr.s_addr = inet_addr("142.58.15.122");
-        // sinRemote.sin_port = htons(12345);
+    // // waiting for screen
+    // struct sockaddr_in sinRemote;
 
-        // char* msg[100];
-        // scanf("%99s", msg);
-        // char messageTx[MAX_LEN];
-        // strcpy(messageTx, msg);
-        // unsigned int sin_len = sizeof(sinRemote);
-        
-        // sendto(s, messageTx , strlen(messageTx), 0, (struct sockaddr *) &sinRemote, sin_len);
-        
- 
-        // sin_len = sizeof(sinRemote);
-        // char messageRx[MAX_LEN];
-        // int bytesRx = recvfrom(s, messageRx, MAX_LEN, 0, (struct sockaddr *) &sinRemote,
-        //          sin_len);
+    // memset(&addr, 0, sizeof(addr));
+    // sinRemote.sin_family = AF_INET;
+    // sinRemote.sin_addr.s_addr = inet_addr("142.58.15.122");
+    // sinRemote.sin_port = htons(12345);
 
-        // int termRx = (bytesRx < MAX_LEN) ? bytesRx : MAX_LEN - 1;
-        // messageRx[termRx] = 0;
-        // printf("Message Recieved (%d bytes): \n\n'%s'\n", bytesRx, messageRx);  
+    // char* msg[100];
+    // scanf("%99s", msg);
+    // char messageTx[MAX_LEN];
+    // strcpy(messageTx, msg);
+    // unsigned int sin_len = sizeof(sinRemote);
 
-        Reciever_shutdown();
-        Printer_shutdown();
+    // sendto(s, messageTx , strlen(messageTx), 0, (struct sockaddr *) &sinRemote, sin_len);
+
+    // sin_len = sizeof(sinRemote);
+    // char messageRx[MAX_LEN];
+    // int bytesRx = recvfrom(s, messageRx, MAX_LEN, 0, (struct sockaddr *) &sinRemote,
+    //          sin_len);
+
+    // int termRx = (bytesRx < MAX_LEN) ? bytesRx : MAX_LEN - 1;
+    // messageRx[termRx] = 0;
+    // printf("Message Recieved (%d bytes): \n\n'%s'\n", bytesRx, messageRx);
+
+    Reciever_shutdown();
+    Printer_shutdown();
 }
