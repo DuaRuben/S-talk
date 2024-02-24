@@ -30,6 +30,7 @@ void *senderThread(void *unused)
         //wait for signal
         while(1){
             pthread_cond_wait(&inputSenderCondVar,&inputSenderMutexVar);
+            break;
         }
 
         //remove from list
@@ -40,7 +41,7 @@ void *senderThread(void *unused)
             strcpy(msg,temp);
             free(temp);
         }
-        
+
         //send Msg
         sendto(socket, msg, strlen(msg), 0, (struct sockaddr *)&sinRemote, sin_len);
     }
