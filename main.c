@@ -1,6 +1,10 @@
 #include "main.h"
 #include "pthread_helpers.h"
 #include "list.h"
+#include "inputThread.h"
+#include "printerThread.h"
+#include "recieverThread.h"
+#include "senderThread.h"
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -15,32 +19,38 @@
 
 List *senderList;
 List *recieverList;
+struct sockaddr_in localsocket;
 
 int main()
 {
     initialize_pthreads();
     senderList = List_create();
     recieverList = List_create();
-    struct sockaddr_in addr;
+    if(senderList == NULL || recieverList == NULL){
+        printf("Error! List(s) could not be created.\nExiting the Program\n");
+        return 1;
+    }
     // Reciever
 
-    memset(&addr, 0, sizeof(addr));
-    addr.sin_family = AF_INET;
-    addr.sin_addr.s_addr = INADDR_ANY;
-    addr.sin_port = htons(12345);
+    memset(&localsocket, 0, sizeof(localsocket));
+    localsocket.sin_family = AF_INET;
+    localsocket.sin_addr.s_addr = INADDR_ANY;
+    localsocket.sin_port = htons(12345);
 
     // Creating a socket
     int sockt = socket(AF_INET, SOCK_DGRAM, 0);
     if (sockt == -1)
     {
-        printf("Error!Socket cannot was not created.");
+        printf("Error!Socket creation Failed\nExiting the Program\n.");
+        return 2;
     }
 
     // Binding a socket
-    int x = bind(sockt, (struct sockaddr *)&addr, sizeof(struct sockaddr_in));
+    int x = bind(sockt, (struct sockaddr *)&localsocket, sizeof(struct sockaddr_in));
     if (x == -1)
     {
         printf("Error!Cannot bind a socket");
+        return 3;
     }
 
     // struct sockaddr_in addr;
@@ -57,7 +67,10 @@ int main()
     // //}
     // recieverThread
     Reciever_init(&recieverList, sockt);
+    Input_init(&senderList);
+
     Printer_init(&recieverList);
+    Sender_init(senderList,sockt);
     // PrinterThread
     // inputThread
     // senderThread
@@ -89,5 +102,7 @@ int main()
 
 
     Reciever_shutdown();
+    Input_shutdown();
     Printer_shutdown();
+    Sender_shutdown();
 }
