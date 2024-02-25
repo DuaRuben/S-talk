@@ -5,18 +5,13 @@
 #ifndef _LIST_H_
 #define _LIST_H_
 #include <stdbool.h>
-#include <pthread.h>
 
 #define LIST_SUCCESS 0
 #define LIST_FAIL -1
 
 // Pthread helpers for recieverThread
 //pthread_cond_t recieverListToMonitorCond; // might move to list.h
-pthread_mutex_t recieverListMutex;
-pthread_cond_t recieverListAppendCond; // when keyboard is enetered
 
-// Pthread helpers for printerThread
-pthread_cond_t recieverListToMonitorCond;
 
 
 
