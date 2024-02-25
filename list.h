@@ -12,14 +12,6 @@
 // Pthread helpers for recieverThread
 //pthread_cond_t recieverListToMonitorCond; // might move to list.h
 
-
-
-
-//Condition variable for InputSender
-pthread_cond_t inputSenderCondVar;
-//Mutex variable for InputSender
-pthread_mutex_t inputSenderMutexVar;
-
 typedef struct Node_s Node;
 struct Node_s {
     void* pItem;

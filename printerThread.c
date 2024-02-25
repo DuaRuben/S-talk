@@ -18,8 +18,9 @@ void *printerThread(void *unused)
         pthread_mutex_lock(&recieverListMutex);
         {
             //while (!list) // while list is empty work in kardia jaaye somehow
-            {
+            while(1){
                 pthread_cond_wait(&recieverListToMonitorCond, &recieverListMutex);
+                break;
             }
             List_first(listptr1);
             char *x = List_remove(listptr1);
