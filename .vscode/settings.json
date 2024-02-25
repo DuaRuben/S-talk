@@ -1,6 +1,8 @@
 {
     "files.associations": {
         "recieverthread.h": "c",
+
         "stdbool.h": "c"
+
     }
 }

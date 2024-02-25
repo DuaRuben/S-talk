@@ -12,6 +12,7 @@
 #define MAX_LEN 1024
 #define PORT 22110
 
+
 List *senderList;
 List *recieverList;
 
@@ -22,6 +23,7 @@ int main()
     recieverList = List_create();
     struct sockaddr_in addr;
     // Reciever
+
     memset(&addr, 0, sizeof(addr));
     addr.sin_family = AF_INET;
     addr.sin_addr.s_addr = INADDR_ANY;
@@ -84,6 +86,7 @@ int main()
     // int termRx = (bytesRx < MAX_LEN) ? bytesRx : MAX_LEN - 1;
     // messageRx[termRx] = 0;
     // printf("Message Recieved (%d bytes): \n\n'%s'\n", bytesRx, messageRx);
+
 
     Reciever_shutdown();
     Printer_shutdown();
