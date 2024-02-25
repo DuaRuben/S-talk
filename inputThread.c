@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "list.h"
+#include "pthread_helpers.h"
 #define MAX_LEN 1024
 
 pthread_t thread;

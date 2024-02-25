@@ -7,6 +7,8 @@
 extern pthread_mutex_t recieverListMutex;
 extern pthread_cond_t recieverListAppendCond;
 extern pthread_cond_t recieverListToMonitorCond;
+extern pthread_mutex_t inputSenderMutexVar;
+extern pthread_cond_t inputSenderCondVar;
 
 // Function to initialize mutex and condition variables
 void initialize_pthreads();

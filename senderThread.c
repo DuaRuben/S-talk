@@ -1,4 +1,5 @@
 #include "senderThread.h"
+#include "pthread_helpers.h"
 #include "list.h"
 #include <pthread.h>
 #include <stdio.h>
