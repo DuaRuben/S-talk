@@ -29,10 +29,7 @@ void *senderThread(void *unused)
     pthread_mutex_lock(&inputSenderMutexVar);
     {
         //wait for signal
-        while(1){
-            pthread_cond_wait(&inputSenderCondVar,&inputSenderMutexVar);
-            break;
-        }
+        pthread_cond_wait(&inputSenderCondVar,&inputSenderMutexVar);
 
         //remove from list
         char msg[MAX_LEN];
