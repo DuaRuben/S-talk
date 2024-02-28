@@ -14,7 +14,6 @@ void * inputThread(void * unused){
     while(1){
         //take input from user
         char sendMsg[MAX_LEN];
-        printf("Enter :");
         fgets(sendMsg,sizeof(sendMsg),stdin);
 
         //convert into character string
