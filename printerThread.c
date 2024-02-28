@@ -34,7 +34,9 @@ void *printerThread(void *unused)
             }
             else
             {
-                fputs("Message Received: '", stdout);
+                puts("\n[");
+                fputs(getFriendMachineName(), stdout);
+                puts("]: '");
                 fputs(x, stdout);
                 fputs("'\n", stdout);
             }
