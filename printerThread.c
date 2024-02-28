@@ -17,15 +17,22 @@ void *printerThread(void *unused)
     {
         pthread_mutex_lock(&recieverListMutex);
         {
-            //while (!list) // while list is empty work in kardia jaaye somehow
+            // while (!list) // while list is empty work in kardia jaaye somehow
             pthread_cond_wait(&recieverListToMonitorCond, &recieverListMutex);
 
-            //List_first(listptr1);
-            char *y = List_curr(listptr1);
-            //printf("Message Recieved: \n\n'%s'\n", y);
+            List_first(listptr1);
             char *x = List_remove(listptr1);
-            //printf("lCount: %d", List_count(listptr1));
             printf("Message Recieved: \n\n'%s'\n", x);
+            
+            // if msg reciever is !
+            if ( *x == '!' && *(x+1) == '\0')
+            {
+                pthread_mutex_lock(&exitProgramMutexVar);
+                {
+                    pthread_cond_signal(&exitProgramCondVar);
+                }
+                pthread_mutex_unlock(&exitProgramMutexVar);
+            }
         }
         pthread_mutex_unlock(&recieverListMutex);
     }

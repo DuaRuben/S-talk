@@ -48,13 +48,14 @@ void *recieverThread(void *unused) //we'll signal this when we get input from ke
         // signal waiter in printer thread
         // hell get mutex
         // mutex for wach pipeline
-	char* temp = strdup(messageRx);
+	    char* temp = strdup(messageRx);
        	pthread_mutex_lock(&recieverListMutex);
         {
             List_append(listptr2, temp);
             pthread_cond_signal(&recieverListToMonitorCond); // signal printer thread
         }
     	pthread_mutex_unlock(&recieverListMutex);
+        free(temp);
         
         //List_curr(listptr2);
         //if (strlen(messageRx) > 0)

@@ -43,6 +43,15 @@ void *senderThread(void *unused)
 
         //send Msg
         sendto(sendersocket, msg, strlen(msg), 0, (struct sockaddr *)&sinRemote4, sin_len);
+
+        // if msg is !
+        if(msg[0] == '!' && msg[1]=='\0'){
+            pthread_mutex_lock(&exitProgramMutexVar);
+            {
+                pthread_cond_signal(&exitProgramCondVar);
+            }
+            pthread_mutex_unlock(&exitProgramMutexVar);
+        }
     }
     pthread_mutex_unlock(&inputSenderMutexVar);
     }

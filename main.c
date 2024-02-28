@@ -99,10 +99,6 @@ int main()
     // int termRx = (bytesRx < MAX_LEN) ? bytesRx : MAX_LEN - 1;
     // messageRx[termRx] = 0;
     // printf("Message Recieved (%d bytes): \n\n'%s'\n", bytesRx, messageRx);
-
-
-    Reciever_shutdown();
-    Input_shutdown();
-    Printer_shutdown();
-    Sender_shutdown();
+    exit_program();
+    return 0;
 }
