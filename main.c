@@ -71,5 +71,4 @@ int main(int argc, char *argv[])
 
     exit_program();
     return 0;
->>>>>>> Stashed changes
 }
