@@ -19,6 +19,10 @@
 List *senderList;
 List *recieverList;
 struct sockaddr_in localsocket;
+int myPort;
+char* friendMachineName;
+int friendPort;
+int sockt;
 
 int getMyPort() {return myPort;}
 int getFriendPort() {return friendPort;}
