@@ -18,12 +18,13 @@ void *printerThread(void *unused)
         pthread_mutex_lock(&recieverListMutex);
         {
             //while (!list) // while list is empty work in kardia jaaye somehow
-            while(1){
-                pthread_cond_wait(&recieverListToMonitorCond, &recieverListMutex);
-                break;
-            }
-            List_first(listptr1);
+            pthread_cond_wait(&recieverListToMonitorCond, &recieverListMutex);
+
+            //List_first(listptr1);
+            char *y = List_curr(listptr1);
+            //printf("Message Recieved: \n\n'%s'\n", y);
             char *x = List_remove(listptr1);
+            //printf("lCount: %d", List_count(listptr1));
             printf("Message Recieved: \n\n'%s'\n", x);
         }
         pthread_mutex_unlock(&recieverListMutex);

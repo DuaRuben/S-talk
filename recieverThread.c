@@ -11,33 +11,36 @@
 
 #define MAX_LEN 1024
 
-List* listptr2;
+static List* listptr2;
 pthread_t threadRec;
-struct sockaddr_in sinRemote;
-int s;
+struct sockaddr_in sinRemote2;
+static int s;
 
 
 void *recieverThread(void *unused) //we'll signal this when we get input from keyboard, hence add cond_wait for thread r
 {
    //mutex lock here
    //pthread_cond_wait(&recCond); // pass mutex also
+   
+        memset(&sinRemote2, 0, sizeof(sinRemote2));
+        sinRemote2.sin_family = AF_INET;
+        sinRemote2.sin_addr.s_addr = inet_addr("142.58.15.67");
+        sinRemote2.sin_port = htons(12345);
+       unsigned int sin_len = sizeof(sinRemote2);
 
     while (1) {
         //waitForRecieverSignal();
 
         // init addr for rec
-        struct sockaddr_in sinRemote;
 
         // i dont think we need this here because not sending
-        memset(&sinRemote, 0, sizeof(sinRemote));
-        sinRemote.sin_family = AF_INET;
-        sinRemote.sin_addr.s_addr = inet_addr("142.58.15.122");
-        sinRemote.sin_port = htons(12345);
-        unsigned int sin_len = sizeof(sinRemote);
+
 
 
         char messageRx[MAX_LEN];
-        int bytesRx = recvfrom(s, messageRx, MAX_LEN, 0, (struct sockaddr *)&sinRemote, sin_len);
+        printf("Here");
+        int bytesRx = recvfrom(s, messageRx, MAX_LEN, 0, (struct sockaddr *)&sinRemote2, sin_len);
+        printf("Not Here");
         int termRx = (bytesRx < MAX_LEN) ? bytesRx : MAX_LEN - 1;
         messageRx[termRx] = 0;
 
@@ -45,9 +48,17 @@ void *recieverThread(void *unused) //we'll signal this when we get input from ke
         // signal waiter in printer thread
         // hell get mutex
         // mutex for wach pipeline
-
-        if (strlen(messageRx) > 0)
-            appendToList(messageRx);
+	char* temp = strdup(messageRx);
+       	pthread_mutex_lock(&recieverListMutex);
+        {
+            List_append(listptr2, temp);
+            pthread_cond_signal(&recieverListToMonitorCond); // signal printer thread
+        }
+    	pthread_mutex_unlock(&recieverListMutex);
+        
+        //List_curr(listptr2);
+        //if (strlen(messageRx) > 0)
+            //appendToList(messageRx);
 
         // i can call waitforsinganl here when returning from 
         // /printing on screen will signal backto move forward
@@ -58,7 +69,7 @@ void *recieverThread(void *unused) //we'll signal this when we get input from ke
 void appendToList(char* messageRx) { // should check here if nodes avail, wait for signal i think should work in this case
     pthread_mutex_lock(&recieverListMutex);
         {
-            List_append(listptr2, messageRx);
+            List_append(listptr2, &messageRx);
             pthread_cond_signal(&recieverListToMonitorCond); // signal printer thread
         }
     pthread_mutex_unlock(&recieverListMutex);

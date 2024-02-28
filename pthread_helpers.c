@@ -13,7 +13,8 @@ pthread_mutex_t inputSenderMutexVar;
 
 // Function to initialize mutex and condition variables
 void initialize_pthreads() {
-    // You can perform additional initialization here if needed
+	
+	// You can perform additional initialization here if needed
     // For example, dynamic initialization of mutexes and condition variables
     pthread_mutex_init(&recieverListMutex, NULL);
     pthread_cond_init(&recieverListAppendCond, NULL);

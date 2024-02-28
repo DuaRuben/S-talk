@@ -34,8 +34,8 @@ int main()
 
     memset(&localsocket, 0, sizeof(localsocket));
     localsocket.sin_family = AF_INET;
-    localsocket.sin_addr.s_addr = INADDR_ANY;
-    localsocket.sin_port = htons(12345);
+    localsocket.sin_addr.s_addr = htonl(INADDR_ANY);
+    localsocket.sin_port = htons(12346);
 
     // Creating a socket
     int sockt = socket(AF_INET, SOCK_DGRAM, 0);
@@ -66,11 +66,11 @@ int main()
     // //    printf("Success");
     // //}
     // recieverThread
-    Reciever_init(&recieverList, sockt);
-    Input_init(&senderList);
-
-    Printer_init(&recieverList);
-    Sender_init(senderList,sockt);
+    Reciever_init(recieverList, sockt);
+    Printer_init(recieverList);
+    
+    Input_init(senderList);
+    Sender_init(senderList, sockt);
     // PrinterThread
     // inputThread
     // senderThread

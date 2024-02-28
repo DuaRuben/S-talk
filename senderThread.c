@@ -11,20 +11,21 @@
 
 #define MAX_LEN 1024
 
-pthread_t thread;
-List *list;
-struct sockaddr_in sinRemote;
-int socket;
+pthread_t thread4;
+List *listptr4;
+struct sockaddr_in sinRemote4;
+int sendersocket;
 
 void *senderThread(void *unused)
 {
     // setup sinRemote
-    struct sockaddr_in sinRemote;
-    memset(&sinRemote, 0, sizeof(sinRemote));
-    sinRemote.sin_family = AF_INET;
-    sinRemote.sin_addr.s_addr = inet_addr("142.58.15.122");
-    sinRemote.sin_port = htons(12345);
-    unsigned int sin_len = sizeof(sinRemote);
+    while(1){
+    
+    memset(&sinRemote4, 0, sizeof(sinRemote4));
+    sinRemote4.sin_family = AF_INET;
+    sinRemote4.sin_addr.s_addr = inet_addr("142.58.15.67");
+    sinRemote4.sin_port = htons(12345);
+    unsigned int sin_len = sizeof(sinRemote4);
 
     pthread_mutex_lock(&inputSenderMutexVar);
     {
@@ -33,27 +34,28 @@ void *senderThread(void *unused)
 
         //remove from list
         char msg[MAX_LEN];
-        List_first(list);
-        char *temp = List_remove(list);
+        List_first(listptr4);
+        char *temp = List_remove(listptr4);
         if(temp!=NULL){
             strcpy(msg,temp);
             free(temp);
         }
 
         //send Msg
-        sendto(socket, msg, strlen(msg), 0, (struct sockaddr *)&sinRemote, sin_len);
+        sendto(sendersocket, msg, strlen(msg), 0, (struct sockaddr *)&sinRemote4, sin_len);
     }
     pthread_mutex_unlock(&inputSenderMutexVar);
+    }
 }
 
 void Sender_init(List *senderList, int sockt)
 {
-    socket = sockt;
-    list = senderList;
-    pthread_create(&thread, NULL, senderThread, NULL);
+    sendersocket = sockt;
+    listptr4 = senderList;
+    pthread_create(&thread4, NULL, senderThread, NULL);
 }
 
 void Sender_shutdown()
 {
-    pthread_join(thread, NULL);
+    pthread_join(thread4, NULL);
 }
