@@ -74,5 +74,7 @@ int main(int argc, char *argv[])
     Sender_init(senderList);
 
     exit_program();
+    List_free(recieverList);
+    List_free(senderList);
     return 0;
 }
