@@ -29,18 +29,23 @@ int getFriendPort() {return friendPort;}
 char* getFriendMachineName() {return friendMachineName;}
 int getSocket() {return sockt;}
 
+void freeItem(void *item)
+{
+    free(item);
+}
+
 int main(int argc, char *argv[])
 {
     if (argc != 4) {
         printf("The format to establish a connection with another host should be of the form:\n\t<./s-talk [my port number] [remote machine name] [remote port number]>\nPlease try again.");
-        return 0;
+        return 1;
     }
     initialize_pthreads();
     senderList = List_create();
     recieverList = List_create();
     if (senderList == NULL || recieverList == NULL){
         printf("Error! List(s) could not be created.\nExiting the Program\n");
-        return 1;
+        return 2;
     }
     // Reciever
     myPort = atoi(argv[1]);
@@ -56,7 +61,7 @@ int main(int argc, char *argv[])
     if (sockt == -1)
     {
         printf("Error!Socket creation Failed\nExiting the Program\n.");
-        return 2;
+        return 3;
     }
 
     // Binding a socket
@@ -64,7 +69,7 @@ int main(int argc, char *argv[])
     if (x == -1)
     {
         printf("Error!Cannot bind a socket");
-        return 3;
+        return 4;
     }
 
     Reciever_init(recieverList);
@@ -74,7 +79,7 @@ int main(int argc, char *argv[])
     Sender_init(senderList);
 
     exit_program();
-    List_free(recieverList);
-    List_free(senderList);
+    List_free(recieverList,freeItem);
+    List_free(senderList,freeItem);
     return 0;
 }

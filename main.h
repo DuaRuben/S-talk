@@ -10,6 +10,7 @@ int getMyPort();
 int getFriendPort();
 char* getFriendMachineName();
 int getSocket();
+void freeItem(void *item);
 
 extern int myPort;
 extern char* friendMachineName;
