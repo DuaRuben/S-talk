@@ -67,45 +67,9 @@ int main(int argc, char *argv[])
     Printer_init(recieverList);
     
     Input_init(senderList);
-<<<<<<< Updated upstream
-    Sender_init(senderList, sockt);
-    // PrinterThread
-    // inputThread
-    // senderThread
-
-    // // waiting for screen
-    // struct sockaddr_in sinRemote;
-
-    // memset(&addr, 0, sizeof(addr));
-    // sinRemote.sin_family = AF_INET;
-    // sinRemote.sin_addr.s_addr = inet_addr("142.58.15.122");
-    // sinRemote.sin_port = htons(12345);
-
-    // char* msg[100];
-    // scanf("%99s", msg);
-    // char messageTx[MAX_LEN];
-    // strcpy(messageTx, msg);
-    // unsigned int sin_len = sizeof(sinRemote);
-
-    // sendto(s, messageTx , strlen(messageTx), 0, (struct sockaddr *) &sinRemote, sin_len);
-
-    // sin_len = sizeof(sinRemote);
-    // char messageRx[MAX_LEN];
-    // int bytesRx = recvfrom(s, messageRx, MAX_LEN, 0, (struct sockaddr *) &sinRemote,
-    //          sin_len);
-
-    // int termRx = (bytesRx < MAX_LEN) ? bytesRx : MAX_LEN - 1;
-    // messageRx[termRx] = 0;
-    // printf("Message Recieved (%d bytes): \n\n'%s'\n", bytesRx, messageRx);
-    exit_program();
-    return 0;
-=======
     Sender_init(senderList);
 
-    Reciever_shutdown();
-    Printer_shutdown();
-
-    Input_shutdown();
-    Sender_shutdown();
+    exit_program();
+    return 0;
 >>>>>>> Stashed changes
 }
