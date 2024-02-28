@@ -14,17 +14,11 @@
 
 pthread_t thread4;
 List *listptr4;
-struct sockaddr_in sinRemote4;
 int sendersocket;
 
 void *senderThread(void *unused)
 {
-    char *fmn = getFriendMachineName();
-    memset(&sinRemote4, 0, sizeof(sinRemote4));
-    sinRemote4.sin_family = AF_INET;
-    sinRemote4.sin_addr.s_addr = inet_addr(fmn);
-    sinRemote4.sin_port = htons(getFriendPort());
-    unsigned int sin_len = sizeof(sinRemote4);
+    struct addrinfo* ptrToFriendMachineAddr = getfriendMachineAddr();
 
     while (1)
     {
@@ -49,14 +43,14 @@ void *senderThread(void *unused)
                 pthread_mutex_lock(&exitProgramMutexVar);
                 {
                     fputs("Exiting Program...\n", stdout);
-                    sendto(sendersocket, msg, strlen(msg), 0, (struct sockaddr *)&sinRemote4, sin_len);
+                    sendto(sendersocket, msg, strlen(msg), 0, ptrToFriendMachineAddr->ai_addr, ptrToFriendMachineAddr->ai_addrlen);
                     pthread_cond_signal(&exitProgramCondVar);
                 }
                 pthread_mutex_unlock(&exitProgramMutexVar);
             }
             else
             {
-                sendto(sendersocket, msg, strlen(msg), 0, (struct sockaddr *)&sinRemote4, sin_len);
+                sendto(sendersocket, msg, strlen(msg), 0, ptrToFriendMachineAddr->ai_addr, ptrToFriendMachineAddr->ai_addrlen);
             }
         }
         pthread_mutex_unlock(&inputSenderMutexVar);

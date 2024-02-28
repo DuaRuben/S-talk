@@ -18,13 +18,7 @@ static int s;
 
 void *recieverThread(void *unused) // we'll signal this when we get input from keyboard, hence add cond_wait for thread r
 {
-    char *fmn = getFriendMachineName();
-    memset(&sinRemote2, 0, sizeof(sinRemote2));
-    sinRemote2.sin_family = AF_INET;
-    sinRemote2.sin_addr.s_addr = inet_addr(fmn);
-    sinRemote2.sin_port = htons(getFriendPort());
-    unsigned int sin_len = sizeof(sinRemote2);
-
+   unsigned int sin_len = sizeof(sinRemote2);
     while (1)
     {
         char messageRx[MAX_LEN] = {'\0'};

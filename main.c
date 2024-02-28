@@ -12,6 +12,7 @@
 #include <arpa/inet.h>
 #include <string.h>
 #include <pthread.h>
+#include <netdb.h>
 
 #define MAX_LEN 1024
 #define PORT 22110
@@ -23,6 +24,7 @@ int myPort;
 char* friendMachineName;
 int friendPort;
 int sockt;
+struct addrinfo *friendMachineAddr;
 
 int getMyPort() {return myPort;}
 int getFriendPort() {return friendPort;}
@@ -32,6 +34,17 @@ int getSocket() {return sockt;}
 void freeItem(void *item)
 {
     free(item);
+}
+void remoteAddrInit(char* friendMachineName, char* friendPort) {
+    struct addrinfo temp;
+    memset(&temp, 0, sizeof(struct addrinfo));
+    temp.ai_family = AF_INET;
+    temp.ai_socktype = SOCK_DGRAM;
+    getaddrinfo(friendMachineName, friendPort, &temp, &friendMachineAddr);
+}
+
+struct addrinfo *getfriendMachineAddr() {
+    return friendMachineAddr;
 }
 
 int main(int argc, char *argv[])
@@ -51,6 +64,8 @@ int main(int argc, char *argv[])
     myPort = atoi(argv[1]);
     friendMachineName = argv[2];
     friendPort = atoi(argv[3]);
+    
+    remoteAddrInit(argv[2], argv[3]);
     memset(&localsocket, 0, sizeof(localsocket));
     localsocket.sin_family = AF_INET;
     localsocket.sin_addr.s_addr = htonl(INADDR_ANY);
