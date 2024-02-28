@@ -48,7 +48,7 @@ void *senderThread(void *unused)
             {
                 pthread_mutex_lock(&exitProgramMutexVar);
                 {
-                    fputs("Exiting Program\n", stdout);
+                    fputs("Exiting Program...\n", stdout);
                     sendto(sendersocket, msg, strlen(msg), 0, (struct sockaddr *)&sinRemote4, sin_len);
                     pthread_cond_signal(&exitProgramCondVar);
                 }
