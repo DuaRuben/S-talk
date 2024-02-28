@@ -42,16 +42,11 @@ void *senderThread(void *unused)
                 free(temp);
             }
 
-            // send Msg
-            sendto(sendersocket, msg, strlen(msg), 0, (struct sockaddr *)&sinRemote4, sin_len);
-        }
-<<<<<<< Updated upstream
-
         //send Msg
         sendto(sendersocket, msg, strlen(msg), 0, (struct sockaddr *)&sinRemote4, sin_len);
 
         // if msg is !
-        if(msg[0] == '!' && msg[1]=='\0'){
+        if(msg[0] == '!' && msg[1]=='\0') {
             pthread_mutex_lock(&exitProgramMutexVar);
             {
                 pthread_cond_signal(&exitProgramCondVar);
@@ -60,9 +55,6 @@ void *senderThread(void *unused)
         }
     }
     pthread_mutex_unlock(&inputSenderMutexVar);
-=======
-        pthread_mutex_unlock(&inputSenderMutexVar);
->>>>>>> Stashed changes
     }
 }
 
