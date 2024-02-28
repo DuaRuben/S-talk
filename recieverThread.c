@@ -39,7 +39,6 @@ void *recieverThread(void *unused) // we'll signal this when we get input from k
             pthread_cond_signal(&recieverListToMonitorCond); // signal printer thread
         }
         pthread_mutex_unlock(&recieverListMutex);
-        free(temp);
     }
 }
 
@@ -53,6 +52,7 @@ void Reciever_init(List *recieverList)
 }
 void Reciever_shutdown()
 {
+    pthread_cancel(threadRec);
     pthread_join(threadRec, NULL);
 }
 

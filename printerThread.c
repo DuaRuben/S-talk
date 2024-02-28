@@ -21,19 +21,24 @@ void *printerThread(void *unused)
 
             List_first(listptr1);
             char *x = List_remove(listptr1);
-            fputs("Message Received: '", stdout);
-            fputs(x, stdout);
-            fputs("'\n", stdout);
-            
+
             // if msg reciever is !
-            if ( *x == '!' && *(x+1) == '\0')
+            if (*x == '!' && *(x + 1) == '\0')
             {
+                fputs("Connection Terminated From Other The Host:\n", stdout);
                 pthread_mutex_lock(&exitProgramMutexVar);
                 {
                     pthread_cond_signal(&exitProgramCondVar);
                 }
                 pthread_mutex_unlock(&exitProgramMutexVar);
             }
+            else
+            {
+                fputs("Message Received: '", stdout);
+                fputs(x, stdout);
+                fputs("'\n", stdout);
+            }
+            free(x);
         }
         pthread_mutex_unlock(&recieverListMutex);
     }
@@ -46,5 +51,6 @@ void Printer_init(List *recieverList)
 }
 void Printer_shutdown()
 {
+    pthread_cancel(threadPr);
     pthread_join(threadPr, NULL);
 }

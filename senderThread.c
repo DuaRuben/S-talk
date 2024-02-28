@@ -26,7 +26,8 @@ void *senderThread(void *unused)
     sinRemote4.sin_port = htons(getFriendPort());
     unsigned int sin_len = sizeof(sinRemote4);
 
-    while (1) {
+    while (1)
+    {
         pthread_mutex_lock(&inputSenderMutexVar);
         {
             // wait for signal
@@ -42,19 +43,23 @@ void *senderThread(void *unused)
                 free(temp);
             }
 
-        //send Msg
-        sendto(sendersocket, msg, strlen(msg), 0, (struct sockaddr *)&sinRemote4, sin_len);
-
-        // if msg is !
-        if(msg[0] == '!' && msg[1]=='\0') {
-            pthread_mutex_lock(&exitProgramMutexVar);
+            // if msg is !
+            if (msg[0] == '!' && msg[1] == '\0')
             {
-                pthread_cond_signal(&exitProgramCondVar);
+                pthread_mutex_lock(&exitProgramMutexVar);
+                {
+                    fputs("Exiting Program\n", stdout);
+                    sendto(sendersocket, msg, strlen(msg), 0, (struct sockaddr *)&sinRemote4, sin_len);
+                    pthread_cond_signal(&exitProgramCondVar);
+                }
+                pthread_mutex_unlock(&exitProgramMutexVar);
             }
-            pthread_mutex_unlock(&exitProgramMutexVar);
+            else
+            {
+                sendto(sendersocket, msg, strlen(msg), 0, (struct sockaddr *)&sinRemote4, sin_len);
+            }
         }
-    }
-    pthread_mutex_unlock(&inputSenderMutexVar);
+        pthread_mutex_unlock(&inputSenderMutexVar);
     }
 }
 
@@ -67,5 +72,6 @@ void Sender_init(List *senderList)
 
 void Sender_shutdown()
 {
+    pthread_cancel(thread4);
     pthread_join(thread4, NULL);
 }
