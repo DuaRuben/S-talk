@@ -25,7 +25,7 @@ void *printerThread(void *unused)
             // if msg reciever is !
             if (*x == '!' && *(x + 1) == '\0')
             {
-                fputs("Connection Terminated From Other The Host:\n", stdout);
+                fputs("Connection Terminated From Other The Host\n", stdout);
                 pthread_mutex_lock(&exitProgramMutexVar);
                 {
                     pthread_cond_signal(&exitProgramCondVar);
