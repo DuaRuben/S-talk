@@ -16,29 +16,39 @@
 #define MAX_LEN 1024
 #define PORT 22110
 
-
 List *senderList;
 List *recieverList;
 struct sockaddr_in localsocket;
 
-int main()
+int getMyPort() {return myPort;}
+int getFriendPort() {return friendPort;}
+char* getFriendMachineName() {return friendMachineName;}
+int getSocket() {return sockt;}
+
+int main(int argc, char *argv[])
 {
+    if (argc != 4) {
+        printf("The format to establish a connection with another host should be of the form:\n\t<./s-talk [my port number] [remote machine name] [remote port number]>\nPlease try again.");
+        return 0;
+    }
     initialize_pthreads();
     senderList = List_create();
     recieverList = List_create();
-    if(senderList == NULL || recieverList == NULL){
+    if (senderList == NULL || recieverList == NULL){
         printf("Error! List(s) could not be created.\nExiting the Program\n");
         return 1;
     }
     // Reciever
-
+    myPort = atoi(argv[1]);
+    friendMachineName = argv[2];
+    friendPort = atoi(argv[3]);
     memset(&localsocket, 0, sizeof(localsocket));
     localsocket.sin_family = AF_INET;
     localsocket.sin_addr.s_addr = htonl(INADDR_ANY);
-    localsocket.sin_port = htons(12346);
+    localsocket.sin_port = htons(getMyPort());
 
     // Creating a socket
-    int sockt = socket(AF_INET, SOCK_DGRAM, 0);
+    sockt = socket(AF_INET, SOCK_DGRAM, 0);
     if (sockt == -1)
     {
         printf("Error!Socket creation Failed\nExiting the Program\n.");
@@ -53,23 +63,11 @@ int main()
         return 3;
     }
 
-    // struct sockaddr_in addr;
-    // memset(&addr, 0, sizeof(addr));
-    // addr.sin_family = AF_INET;
-    // addr.sin_addr.s_addr = inet_addr("142.58.15.216");
-    // addr.sin_port = htons(12346);
-
-    // // memset(&addr.sin_zero,'\0', 8);
-    // int s = socket(AF_INET, SOCK_DGRAM, 0);
-    // int x = bind(s, (struct sockaddr *)&addr, sizeof(struct sockaddr_in));
-    // //if(x ==0){
-    // //    printf("Success");
-    // //}
-    // recieverThread
-    Reciever_init(recieverList, sockt);
+    Reciever_init(recieverList);
     Printer_init(recieverList);
     
     Input_init(senderList);
+<<<<<<< Updated upstream
     Sender_init(senderList, sockt);
     // PrinterThread
     // inputThread
@@ -101,4 +99,13 @@ int main()
     // printf("Message Recieved (%d bytes): \n\n'%s'\n", bytesRx, messageRx);
     exit_program();
     return 0;
+=======
+    Sender_init(senderList);
+
+    Reciever_shutdown();
+    Printer_shutdown();
+
+    Input_shutdown();
+    Sender_shutdown();
+>>>>>>> Stashed changes
 }

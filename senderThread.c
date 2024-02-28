@@ -1,6 +1,7 @@
 #include "senderThread.h"
 #include "pthread_helpers.h"
 #include "list.h"
+#include "main.h"
 #include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -18,28 +19,33 @@ int sendersocket;
 
 void *senderThread(void *unused)
 {
-    // setup sinRemote
-    while(1){
-    
+    char *fmn = getFriendMachineName();
     memset(&sinRemote4, 0, sizeof(sinRemote4));
     sinRemote4.sin_family = AF_INET;
-    sinRemote4.sin_addr.s_addr = inet_addr("142.58.15.67");
-    sinRemote4.sin_port = htons(12345);
+    sinRemote4.sin_addr.s_addr = inet_addr(fmn);
+    sinRemote4.sin_port = htons(getFriendPort());
     unsigned int sin_len = sizeof(sinRemote4);
 
-    pthread_mutex_lock(&inputSenderMutexVar);
-    {
-        //wait for signal
-        pthread_cond_wait(&inputSenderCondVar,&inputSenderMutexVar);
+    while (1) {
+        pthread_mutex_lock(&inputSenderMutexVar);
+        {
+            // wait for signal
+            pthread_cond_wait(&inputSenderCondVar, &inputSenderMutexVar);
 
-        //remove from list
-        char msg[MAX_LEN];
-        List_first(listptr4);
-        char *temp = List_remove(listptr4);
-        if(temp!=NULL){
-            strcpy(msg,temp);
-            free(temp);
+            // remove from list
+            char msg[MAX_LEN];
+            List_first(listptr4);
+            char *temp = List_remove(listptr4);
+            if (temp != NULL)
+            {
+                strcpy(msg, temp);
+                free(temp);
+            }
+
+            // send Msg
+            sendto(sendersocket, msg, strlen(msg), 0, (struct sockaddr *)&sinRemote4, sin_len);
         }
+<<<<<<< Updated upstream
 
         //send Msg
         sendto(sendersocket, msg, strlen(msg), 0, (struct sockaddr *)&sinRemote4, sin_len);
@@ -54,12 +60,15 @@ void *senderThread(void *unused)
         }
     }
     pthread_mutex_unlock(&inputSenderMutexVar);
+=======
+        pthread_mutex_unlock(&inputSenderMutexVar);
+>>>>>>> Stashed changes
     }
 }
 
-void Sender_init(List *senderList, int sockt)
+void Sender_init(List *senderList)
 {
-    sendersocket = sockt;
+    sendersocket = getSocket();
     listptr4 = senderList;
     pthread_create(&thread4, NULL, senderThread, NULL);
 }

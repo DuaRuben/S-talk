@@ -4,7 +4,7 @@
 #include <pthread.h>
 
 void * senderThread(void * unused);
-void Sender_init(List* senderList,int socket);
+void Sender_init(List* senderList);
 void Sender_shutdown();
 
 #endif
