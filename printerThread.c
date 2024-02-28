@@ -17,12 +17,13 @@ void *printerThread(void *unused)
     {
         pthread_mutex_lock(&recieverListMutex);
         {
-            // while (!list) // while list is empty work in kardia jaaye somehow
             pthread_cond_wait(&recieverListToMonitorCond, &recieverListMutex);
 
             List_first(listptr1);
             char *x = List_remove(listptr1);
-            printf("Message Recieved: \n\n'%s'\n", x);
+            fputs("Message Received: '", stdout);
+            fputs(x, stdout);
+            fputs("'\n", stdout);
             
             // if msg reciever is !
             if ( *x == '!' && *(x+1) == '\0')
