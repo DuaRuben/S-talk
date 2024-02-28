@@ -22,7 +22,7 @@ void *recieverThread(void *unused) // we'll signal this when we get input from k
     while (1)
     {
         char messageRx[MAX_LEN] = {'\0'};
-        int bytesRx = recvfrom(s, messageRx, MAX_LEN, 0, (struct sockaddr *)&sinRemote2, sin_len);
+        int bytesRx = recvfrom(s, messageRx, MAX_LEN, 0, (struct sockaddr *)&sinRemote2, &sin_len);
         int termRx = (bytesRx < MAX_LEN) ? bytesRx : MAX_LEN - 1;
         messageRx[termRx] = 0;
 

@@ -96,5 +96,6 @@ int main(int argc, char *argv[])
     exit_program();
     List_free(recieverList,freeItem);
     List_free(senderList,freeItem);
+    freeaddrinfo(friendMachineAddr);
     return 0;
 }
