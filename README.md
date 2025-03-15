@@ -26,4 +26,10 @@ All four threads share access to a list ADT where messages are added and removed
 - **Pthreads library**
 - **Basic understanding of UDP sockets and multithreading**
 
+### Breakdown of the Makefile commands:
 
+- `make`: Compiles the source code and generates the `s-talk` executable.
+- `make clean`: Removes the compiled binary (`s-talk`) and other temporary files.
+- `make help`: Displays instructions to run the `make` command to build the project.
+
+This section helps the user understand how to use the Makefile to manage the build and cleanup process for the **s-talk** project.
